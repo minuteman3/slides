@@ -91,6 +91,52 @@ data Algebraic = Algebraic
                 </section>
 
                 <section>
+                    <p>But you might have noticed if you try and use our Algebraic type in GHCi, you get an error saying "No instance for (Show Algebraic) arising from a use of `print'".</p>
+                </section>
+
+                <section>
+                    <img src="/static/wat.jpg" />
+                </section>
+
+                <section>
+                    <p>Haskell has another powerful feature closely related to ADTs: Type classes</p>
+                </section>
+
+                <section>
+                    <p>Type classes behave a bit like interfaces in languages like Java, but are much more powerful</p>
+                </section>
+
+                <section>
+                    <p>So for example, the "Show" typeclass is a class of types defining a "show" function, which has to be of type <code>a -> String</code></p>
+                </section>
+
+                <section>
+                    <p>That's a pretty handy type class to be a member of. GHCi needs an instance of Show to be able to print a result!</p>
+                </section>
+
+                <section>
+                    <p>Let's provide a basic implementation!</p>
+                </section>
+
+                <section>
+                    <pre><code>
+showAlgebraic :: Algebraic -> String
+showAlgebraic a = "Algebraic"
+
+instance Show Algebraic where
+    show = showAlgebraic
+                    </code></pre>
+                </section>
+
+                <section>
+                    <p>Now if you try and use Algebraic in the interpreter it won't complain!</p>
+                </section>
+
+                <section>
+                    <img src="/static/algebraic.gif" />
+                </section>
+
+                <section>
                     <p>But it's still not very interesting! There must be more!</p>
                     <p class="fragment">There is. ADTs can have more than one constructor.</p>
                 </section>
@@ -111,15 +157,45 @@ data Bool = False
                 </section>
 
                 <section>
-                    <p>Now we're getting somewhere!</p>
+                    <p>But as you add more constructors, you'd need to add patterns to your show function to display them</p>
                 </section>
 
                 <section>
-                    <img src="/static/algebraic.gif" />
+                    <p>As you can probably imagine, that would get pretty tedious</p>
                 </section>
 
                 <section>
-                    <p>But wait, there's more!</p>
+                    <p>Fortunately, Haskell has us covered once again!</p>
+                </section>
+
+                <section>
+                    <pre><code>
+data Algebraic = Algebraic
+               | DataType
+               deriving Show
+                    </code></pre>
+                </section>
+
+                <section>
+                    <p>"deriving Show" tells the compiler to infer an appropriate instance of Show. It won't be enough in every case, but it makes hacking on the interpreter much easier</p>
+                </section>
+
+                <section>
+                    <p>But there are other classes than just Show!</p>
+                </section>
+
+                <section>
+                    <p>For example:</p>
+                    <ul>
+                        <li>Eq - the Equality class, that includes the == and /= operators</li>
+                        <li>Ord - the Ordinal class, that includes the &gt;, &lt;, &lt;=, and &gt;= operators<li>
+                        <li>Num - the Numeral class, that defines the +, *, and - operators</li>
+                        <li>Fractional - which defines the / operator</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <p>Many type classes can be derived, but some can't. But let's get back to ADTs for now.</p>
                 </section>
 
                 <section>
@@ -192,23 +268,27 @@ listLength Empty      = 0
                 </section>
 
                 <section>
-                    <p>Let's try one more example...</p>
-                </section>
-
-                <section>
                     <p>Map is a nice function to have for lists. How would it look for ours?</p>
                     <pre class="fragment"><code data-trim contenteditable>
 listMap :: <span class="fragment">(a -> b)</span> -> <span class="fragment">List a</span> -> <span class="fragment">List b</span>
 <span class="fragment">listMap f l = ...?</span>
+
+&#955;> listMap (+1) (Cons 1 (Cons 2 Empty))
+Cons 2 (Cons 3 Empty)
                     </code></pre>
                 </section>
 
                 <section>
-
-                </section>
-
-                <section>
-                    <p>They can even be recursive in their parameters, or have more than one!</p>
+                    <h1>Exercise</h1>
+                    <ol>
+                        <li>Implement a binary search tree ADT called BinTree</li>
+                        <li>Implement an insert function that adds a value to a BinTree. Values should be ordered inside the tree (but the tree doesn't need to be balanced)
+                        <li>Implement a length function for BinTree that counts the number of nodes</li>
+                        <li>Implement a map function for BinTree that applies a function to the value in every node and preserves the tree structure</li>
+                        <li>Implement a fold function for BinTree that can reduce a BinTree to a single value</li>
+                        <li>Implement an asList function that converts the BinTree to a standard Haskell list type</li>
+                        <li class="fragment">BONUS: Make your tree into a Key-Value store</li>
+                    </ol>
                 </section>
 
                 <section>
